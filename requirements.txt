@@ -1,20 +1,39 @@
-# EC2 배포용 requirements.txt
+# =============================================================================
+# BOVI 보드게임 채팅봇 - Python 의존성 패키지
+# 로컬 및 EC2 환경 모두 지원
+# =============================================================================
+
+# Django 프레임워크
 Django==4.2.7
+
+# QR 코드 생성
 qrcode==7.4.2
 Pillow==10.1.0
+
+# HTTP 클라이언트
 requests==2.31.0
-# HTTP 클라이언트 (Runpod 통신용)
 httpx==0.25.2
+
 # OpenAI API
 openai==0.28.0
-# PostgreSQL (EC2에서 사용)
+
+# PostgreSQL (EC2용)
 psycopg2-binary==2.9.9
+
+# 데이터베이스 URL 파싱
 dj-database-url==2.1.0
+
 # 프로덕션 서버
 gunicorn==21.2.0
-# 환경변수 관리
+
+# 환경변수 관리 (옵션)
 python-decouple==3.8
-# AWS 관련
+
+# AWS 관련 (옵션)
 boto3==1.29.0
-# 정적 파일 관리
+
+# 정적 파일 서빙
 whitenoise==6.6.0
+
+# 개발 도구 (로컬용, 설치 실패해도 무시)
+# debug-toolbar는 선택사항
