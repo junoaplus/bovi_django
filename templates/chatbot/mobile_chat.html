@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ chat_type_name }} - 모바일 채팅</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+            color: #333;
+        }
+        
+        .mobile-container {
+            max-width: 500px;
+            margin: 0 auto;
+            height: calc(100vh - 2rem);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mobile-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mobile-header h1 {
+            font-size: 1.2rem;
+            color: #4f46e5;
+            margin-bottom: 0.5rem;
+        }
+        
+        .mobile-header p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .game-selector-mobile {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        /* 모바일 검색창 스타일 */
+        .mobile-search-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .mobile-game-search {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-game-search:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .mobile-search-icon {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            pointer-events: none;
+            font-size: 0.9rem;
+        }
+        
+        /* 모바일 검색 결과 스타일 */
+        .mobile-search-results {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            max-height: 150px;
+            overflow-y: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mobile-search-result-item {
+            padding: 0.75rem;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+            transition: background-color 0.2s ease;
+        }
+        
+        .mobile-search-result-item:hover {
+            background-color: #f8fafc;
+        }
+        
+        .mobile-search-result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .mobile-no-results {
+            padding: 1rem;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+        
+        .game-dropdown-mobile {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            outline: none;
+        }
+        
+        .mobile-chat-messages {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .mobile-message {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .mobile-message.user {
+            justify-content: flex-end;
+        }
+        
+        .mobile-message-bubble {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 18px;
+            word-wrap: break-word;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .mobile-message.user .mobile-message-bubble {
+            background: linear-gradient(45deg, #4f46e5, #7c3aed);
+            color: white;
+        }
+        
+        .mobile-message.bot .mobile-message-bubble {
+            background: #f1f5f9;
+            color: #334155;
+        }
+        
+        .mobile-input-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mobile-input {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .mobile-input input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            outline: none;
+            font-size: 1rem;
+        }
+        
+        .mobile-input input:focus {
+            border-color: #4f46e5;
+        }
+        
+        .mobile-input button {
+            padding: 0.75rem 1rem;
+            background: linear-gradient(45deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-input button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+        
+        .mobile-input button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 0.5rem;
+            font-style: italic;
+            color: #666;
+            font-size: 0.8rem;
+        }
+        
+        .secret-notice {
+            background: rgba(255, 235, 59, 0.1);
+            border: 1px solid rgba(255, 235, 59, 0.3);
+            border-radius: 10px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+            color: #333;
+            text-align: center;
+        }
+        
+        .secret-notice::before {
+            content: "🤫 ";
+        }
+        
+        .no-game-selected {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <div class="mobile-header">
+            <h1>{{ chat_type_name }}</h1>
+            <p>궁금한 것을 자유롭게 물어보세요!</p>
+        </div>
+        
+        <div class="game-selector-mobile">
+            <select id="mobileGameSelect" class="game-dropdown-mobile">
+                <option value="">게임을 선택해주세요</option>
+                {% for game in available_games %}
+                    <option value="{{ game }}">{{ game }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="mobile-chat-messages" id="mobileChatMessages">
+            <div class="secret-notice">
+                이 채팅은 다른 사람들에게 보이지 않습니다. 편안하게 질문하세요!
+            </div>
+            
+            <div class="no-game-selected" id="noGameSelected">
+                먼저 위에서 게임을 선택해주세요! 🎲
+            </div>
+        </div>
+        
+        <div class="typing-indicator" id="typingIndicator">
+            <span class="typing-dots">💭 답변 중...</span>
+        </div>
+        
+        <div class="mobile-input-container">
+            <div class="mobile-input">
+                <input type="text" id="mobileMessageInput" placeholder="게임을 선택한 후 질문해주세요..." maxlength="500" disabled>
+                <button onclick="sendMobileMessage()" id="sendButton" disabled>➤</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let sessionId = null;
+        let selectedGame = '';
+        let allGames = [{% for game in available_games %}'{{ game|escapejs }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+        
+        // 모바일 게임 검색 기능
+        document.getElementById('mobileGameSearch').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const searchResults = document.getElementById('mobileSearchResults');
+            
+            if (searchTerm === '') {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            // 검색 결과 필터링
+            const filteredGames = allGames.filter(game => 
+                game.toLowerCase().includes(searchTerm)
+            );
+            
+            if (filteredGames.length > 0) {
+                let resultsHTML = '';
+                filteredGames.slice(0, 8).forEach(game => { // 모바일에서는 8개까지
+                    const icon = '{{ chat_type }}' === 'finetuning_rules' ? '⚙️' : '💥';
+                    resultsHTML += `<div class="mobile-search-result-item" onclick="selectMobileGameFromSearch('${game.replace(/'/g, "\\'")}')">${icon} ${game}</div>`;
+                });
+                searchResults.innerHTML = resultsHTML;
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.innerHTML = '<div class="mobile-no-results">검색 결과가 없습니다.</div>';
+                searchResults.style.display = 'block';
+            }
+        });
+        
+        // 모바일 검색 결과에서 게임 선택
+        function selectMobileGameFromSearch(gameName) {
+            document.getElementById('mobileGameSearch').value = gameName;
+            document.getElementById('mobileSearchResults').style.display = 'none';
+            document.getElementById('mobileGameSelect').value = gameName;
+            
+            // 게임 선택 이벤트 트리거
+            handleMobileGameSelection(gameName);
+        }
+        
+        // 모바일 게임 선택 처리 (공통 함수)
+        function handleMobileGameSelection(gameName) {
+            selectedGame = gameName;
+            const input = document.getElementById('mobileMessageInput');
+            const button = document.getElementById('sendButton');
+            const noGameDiv = document.getElementById('noGameSelected');
+            const chatMessages = document.getElementById('mobileChatMessages');
+            
+            if (selectedGame) {
+                input.disabled = false;
+                button.disabled = false;
+                input.placeholder = `${selectedGame}에 대해 질문해주세요...`;
+                noGameDiv.style.display = 'none';
+                
+                // 기존 메시지들 유지하고 환영 메시지만 추가
+                addMobileMessage(`${selectedGame} 게임을 선택하셨네요! 🎲<br>룰에 대해 궁금한 점을 자유롭게 질문해주세요.`, 'bot');
+            } else {
+                input.disabled = true;
+                button.disabled = true;
+                input.placeholder = '게임을 선택한 후 질문해주세요...';
+                noGameDiv.style.display = 'block';
+                
+                // 채팅 초기화
+                chatMessages.innerHTML = `
+                    <div class="secret-notice">
+                        이 채팅은 다른 사람들에게 보이지 않습니다. 편안하게 질문하세요!
+                    </div>
+                    <div class="no-game-selected" id="noGameSelected">
+                        먼저 위에서 게임을 선택해주세요! 🎲
+                    </div>
+                `;
+            }
+        }
+        
+        // 모바일 검색창 외부 클릭 시 검색 결과 숨기기
+        document.addEventListener('click', function(e) {
+            const searchContainer = document.querySelector('.mobile-search-container');
+            const searchResults = document.getElementById('mobileSearchResults');
+            
+            if (searchContainer && !searchContainer.contains(e.target)) {
+                searchResults.style.display = 'none';
+            }
+        });
+        
+        // 기존 드롭다운 게임 선택 처리
+        document.getElementById('mobileGameSelect').addEventListener('change', function() {
+            if (this.value) {
+                // 검색창도 업데이트
+                document.getElementById('mobileGameSearch').value = this.value;
+                handleMobileGameSelection(this.value);
+            } else {
+                document.getElementById('mobileGameSearch').value = '';
+                handleMobileGameSelection('');
+            }
+        });
+        
+        function sendMobileMessage() {
+            const input = document.getElementById('mobileMessageInput');
+            const message = input.value.trim();
+            
+            if (!message || !selectedGame) return;
+            
+            // 사용자 메시지 표시
+            addMobileMessage(message, 'user');
+            input.value = '';
+            
+            // 타이핑 인디케이터 표시
+            showTypingIndicator();
+            
+            // 봇 응답 요청
+            fetch('/api/chat/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: message,
+                    chat_type: '{{ chat_type }}',
+                    session_id: sessionId,
+                    game_name: selectedGame
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideTypingIndicator();
+                if (data.status === 'success') {
+                    addMobileMessage(data.response, 'bot');
+                    sessionId = data.session_id;
+                } else {
+                    addMobileMessage('죄송합니다. 오류가 발생했습니다.', 'bot');
+                }
+            })
+            .catch(error => {
+                hideTypingIndicator();
+                console.error('Error:', error);
+                addMobileMessage('죄송합니다. 네트워크 오류가 발생했습니다.', 'bot');
+            });
+        }
+        
+        function addMobileMessage(message, sender) {
+            const chatMessages = document.getElementById('mobileChatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `mobile-message ${sender}`;
+            
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = 'mobile-message-bubble';
+            bubbleDiv.innerHTML = message.replace(/\n/g, '<br>');
+            
+            messageDiv.appendChild(bubbleDiv);
+            chatMessages.appendChild(messageDiv);
+            
+            // 스크롤을 맨 아래로
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function showTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'block';
+        }
+        
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+        
+        // 엔터 키로 메시지 전송
+        document.getElementById('mobileMessageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMobileMessage();
+            }
+        });
+        
+        // 화면 크기 조정
+        function adjustHeight() {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+        
+        window.addEventListener('resize', adjustHeight);
+        adjustHeight();
+    </script>
+</body>
+</html>

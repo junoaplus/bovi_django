@@ -1,0 +1,20 @@
+# EC2 배포용 requirements.txt
+Django==4.2.7
+qrcode==7.4.2
+Pillow==10.1.0
+requests==2.31.0
+# HTTP 클라이언트 (Runpod 통신용)
+httpx==0.25.2
+# OpenAI API
+openai==0.28.0
+# PostgreSQL (EC2에서 사용)
+psycopg2-binary==2.9.9
+dj-database-url==2.1.0
+# 프로덕션 서버
+gunicorn==21.2.0
+# 환경변수 관리
+python-decouple==3.8
+# AWS 관련
+boto3==1.29.0
+# 정적 파일 관리
+whitenoise==6.6.0
